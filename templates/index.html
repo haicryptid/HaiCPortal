@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HAICRYPTID UNIVERSE</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: black url('/static/stars.gif') repeat;
+            /* 우주 느낌 백그라운드 (별 깜빡임 GIF 있으면 넣기) */
+            background-size: cover;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px #8a2be2, 0 0 20px #00f, 0 0 30px #0ff;
+            transition: text-shadow 0.3s ease;
+        }
+
+        .glow-text:hover {
+            text-shadow: 0 0 20px #8a2be2, 0 0 30px #0ff, 0 0 40px #0ff;
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0 20px #00ffffaa;
+        }
+
+        .star {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, #fff, #d8b4fe, #93c5fd);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 5px #d8b4fe);
+            animation: fadeOut 1.2s forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+</head>
+
+<body class="text-white flex flex-col items-center justify-center min-h-screen px-4">
+
+    <h1 class="text-4xl md:text-6xl font-bold mb-12 glow-text text-center">HAICRYPTID UNIVERSE</h1>
+
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full max-w-6xl">
+        <a href="http://dna.haicryptid.xyz" target="_blank"
+            class="card bg-gradient-to-br from-purple-800 to-indigo-600 p-6 rounded-2xl text-center">
+            <h2 class="text-2xl font-semibold mb-2">HaiCDNA</h2>
+            <p class="text-sm text-gray-200">DNA 염기서열 시각화 도구</p>
+        </a>
+        <a href="http://plan.haicryptid.xyz:5000" target="_blank"
+            class="card bg-gradient-to-br from-blue-800 to-green-600 p-6 rounded-2xl text-center">
+            <h2 class="text-2xl font-semibold mb-2">HaiCPlan</h2>
+            <p class="text-sm text-gray-200">일정 관리 도구</p>
+        </a>
+        <div class="card bg-gray-800 p-6 rounded-2xl text-center opacity-60 cursor-not-allowed">
+            <h2 class="text-2xl font-semibold mb-2">HaiCLunch</h2>
+            <p class="text-sm text-gray-300">COMING SOON 🍱</p>
+        </div>
+    </div>
+
+    <footer class="mt-16 text-gray-500 text-sm">
+        © 2025 Haicryptid. All rights reserved.
+    </footer>
+
+    <!-- 반짝이 커서 -->
+
+    <script>
+        let moveCount = 0;
+
+        window.addEventListener("mousemove", (e) => {
+            moveCount++;
+            if (moveCount % 10 === 0) {  // 10번마다 한 번 별 생성 (빈도 조절 가능)
+                const star = document.createElement("div");
+                star.classList.add("star");
+                star.style.left = e.clientX + "px";
+                star.style.top = e.clientY + "px";
+                document.body.appendChild(star);
+                setTimeout(() => star.remove(), 1200);
+            }
+        });
+    </script>
+
+
+
+</body>
+
+</html>
