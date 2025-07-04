@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>관리자 대시보드 - Haicryptid Universe</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+
+<body class="bg-black text-white min-h-screen flex flex-col items-center p-6">
+
+    <h1 class="text-4xl font-bold mb-8 glow-text">Haicryptid Universe<br>관리자 대시보드</h1>
+    <form method="POST" action="{{ url_for('clear_logs') }}">
+        <button type="submit" onclick="return confirm('정말 모든 로그를 삭제할까요?');" class="clear-logs-btn">
+            기록 모두 삭제
+        </button>
+
+    </form>
+
+    <table class="table-auto w-full max-w-4xl text-left border-collapse border border-gray-700">
+        <thead>
+            <tr class="bg-purple-900">
+                <th class="border border-gray-600 px-4 py-2">IP 주소</th>
+                <th class="border border-gray-600 px-4 py-2">접속 URL</th>
+                <th class="border border-gray-600 px-4 py-2">접속 시간 (KST)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ip, url, timestamp in logs %}
+            <tr class="even:bg-gray-800 odd:bg-gray-900">
+                <td class="border border-gray-600 px-4 py-2">{{ ip }}</td>
+                <td class="border border-gray-600 px-4 py-2">{{ url }}</td>
+                <td class="border border-gray-600 px-4 py-2">{{ timestamp }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3" class="text-center p-4">로그가 없습니다.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('admin') }}"
+        class="clear-logs-btn mt-8 inline-blcok text-center">
+        로그아웃
+    </a>
+
+</body>
+
+<script>
+    let moveCount = 0;
+
+    window.addEventListener("mousemove", (e) => {
+        moveCount++;
+        if (moveCount % 7 === 0) {  // 10번마다 한 번 별 생성 (빈도 조절 가능)
+            const star = document.createElement("div");
+            star.classList.add("star");
+            star.style.left = e.clientX + "px";
+            star.style.top = e.clientY + "px";
+            document.body.appendChild(star);
+            setTimeout(() => star.remove(), 1200);
+        }
+    });
+</script>
+
+</html>

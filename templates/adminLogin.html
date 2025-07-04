@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Login - Haicryptid Universe</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <style>
+    body {
+      background: black url('/static/stars.gif') repeat;
+      background-size: cover;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .login-card {
+      background: rgba(28, 24, 53, 0.85);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow:
+        0 0 20px #7c3aed,
+        0 0 40px #a78bfa;
+      width: 320px;
+      text-align: center;
+    }
+
+    .login-card h2 {
+      color: #a78bfa;
+      font-weight: 700;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 30px #7c3aed;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 14px;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      border: none;
+      background: #2a2362;
+      color: #eee;
+      font-size: 1rem;
+      box-sizing: border-box;
+      outline: none;
+      box-shadow: inset 0 0 10px #5b4fc0;
+      transition: box-shadow 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      box-shadow: 0 0 10px #a78bfa;
+    }
+
+    .toggle-btn {
+      background: none;
+      color: #ccc;
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 1rem;
+      box-shadow: 0 0 4px #a78bfa;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #7c3aed;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 5px #a78bfa;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #a78bfa;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-card">
+    <h2>Admin 로그인</h2>
+    <form method="POST" action="/admin">
+      <input type="text" name="username" placeholder="아이디" required autofocus />
+      <input type="password" name="password" placeholder="비밀번호" id="passwordInput" required />
+
+      <!-- 👇 비밀번호 보기 버튼 -->
+      <button type="button" onclick="togglePassword()" 
+              class="mt-2 text-indigo-400 font-semibold hover:text-indigo-200 transition bg-transparent border-none cursor-pointer">
+        비밀번호 보기
+      </button>
+
+      <!-- 로그인 버튼 -->
+      <button type="submit" 
+              class="mt-2 text-indigo-400 font-semibold hover:text-indigo-200 transition bg-transparent border-none cursor-pointer">
+        로그인
+      </button>
+    </form>
+
+    <!-- 메인으로 돌아가기 버튼 -->
+    <a href="{{ url_for('index') }}" 
+       class="mt-6 inline-block text-indigo-400 font-semibold hover:text-indigo-200 transition cursor-pointer">
+      메인으로 돌아가기
+    </a>
+  </div>
+</body>
+
+
+  <script>
+    function togglePassword() {
+      const input = document.getElementById("passwordInput");
+      const btn = event.currentTarget;
+
+      if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "비밀번호 숨기기";
+      } else {
+        input.type = "password";
+        btn.textContent = "비밀번호 보기";
+      }
+    }
+  </script>
+
+  
+</body>
+
+</html>
