@@ -6,6 +6,7 @@
   <title>Admin Login - Haicryptid Universe</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='HaiCPortal.png') }}">
   <style>
     body {
       background: black url('/static/stars.gif') repeat;
@@ -134,7 +135,21 @@
     }
   </script>
 
-  
+  <script>
+        let moveCount = 0;
+
+        window.addEventListener("mousemove", (e) => {
+            moveCount++;
+            if (moveCount % 7 === 0) {  // 10번마다 한 번 별 생성 (빈도 조절 가능)
+                const star = document.createElement("div");
+                star.classList.add("star");
+                star.style.left = e.clientX + "px";
+                star.style.top = e.clientY + "px";
+                document.body.appendChild(star);
+                setTimeout(() => star.remove(), 1200);
+            }
+        });
+    </script>
 </body>
 
 </html>
