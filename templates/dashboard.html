@@ -12,40 +12,73 @@
 <body class="bg-black text-white min-h-screen flex flex-col items-center p-6">
 
     <h1 class="text-4xl font-bold mb-8 glow-text">Haicryptid Universe<br>관리자 대시보드</h1>
-    <form method="POST" action="{{ url_for('clear_logs') }}">
-        <button type="submit" onclick="return confirm('정말 모든 로그를 삭제할까요?');" class="clear-logs-btn">
+
+    <form method="POST" action="{{ url_for('clear_logs') }}" class="mb-4 w-full max-w-4xl flex justify-end">
+        <button type="submit" onclick="return confirm('정말 모든 로그를 삭제할까요?');"
+            class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded font-semibold">
             기록 모두 삭제
         </button>
-
     </form>
 
-    <table class="table-auto w-full max-w-4xl text-left border-collapse border border-gray-700">
-        <thead>
-            <tr class="bg-purple-900">
-                <th class="border border-gray-600 px-4 py-2">IP 주소</th>
-                <th class="border border-gray-600 px-4 py-2">접속 URL</th>
-                <th class="border border-gray-600 px-4 py-2">접속 시간 (KST)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for ip, url, timestamp in logs %}
-            <tr class="even:bg-gray-800 odd:bg-gray-900">
-                <td class="border border-gray-600 px-4 py-2">{{ ip }}</td>
-                <td class="border border-gray-600 px-4 py-2">{{ url }}</td>
-                <td class="border border-gray-600 px-4 py-2">{{ timestamp }}</td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="3" class="text-center p-4">로그가 없습니다.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="w-full max-w-4xl overflow-x-auto max-h-[400px] overflow-y-auto border border-gray-700 rounded">
+        <table class="table-auto w-full text-left border-collapse border border-gray-700">
+            <thead>
+                <tr class="bg-purple-900 sticky top-0">
+                    <th class="border border-gray-600 px-4 py-2">IP 주소</th>
+                    <th class="border border-gray-600 px-4 py-2">접속 URL</th>
+                    <th class="border border-gray-600 px-4 py-2">접속 시간 (KST)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ip, url, timestamp in logs %}
+                <tr class="even:bg-gray-800 odd:bg-gray-900">
+                    <td class="border border-gray-600 px-4 py-2 break-words max-w-[150px]">{{ ip }}</td>
+                    <td class="border border-gray-600 px-4 py-2 break-words max-w-[300px]">{{ url }}</td>
+                    <td class="border border-gray-600 px-4 py-2 whitespace-nowrap">{{ timestamp }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="text-center p-4 text-gray-400 font-semibold">로그가 없습니다.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="mt-10 flex justify-center items-center space-x-2">
+            {% if page > 1 %}
+            <a href="{{ url_for('dashboard', page=1) }}"
+                class="px-3 py-1 bg-purple-800 text-white rounded-l-lg hover:bg-purple-700 transition">
+                « 처음
+            </a>
+            <a href="{{ url_for('dashboard', page=page-1) }}"
+                class="px-3 py-1 bg-purple-800 text-white hover:bg-purple-700 transition">
+                ← 이전
+            </a>
+            {% endif %}
 
-    <a href="{{ url_for('admin') }}"
-        class="clear-logs-btn mt-8 inline-blcok text-center">
-        로그아웃
-    </a>
+            <span
+                class="px-4 py-1 bg-gray-900 text-purple-400 border border-purple-600 rounded font-mono tracking-wide shadow-md">
+                Page {{ page }} / {{ total_pages }}
+            </span>
+
+            {% if page < total_pages %} <a href="{{ url_for('dashboard', page=page+1) }}"
+                class="px-3 py-1 bg-purple-800 text-white hover:bg-purple-700 transition">
+                다음 →
+                </a>
+                <a href="{{ url_for('dashboard', page=total_pages) }}"
+                    class="px-3 py-1 bg-purple-800 text-white rounded-r-lg hover:bg-purple-700 transition">
+                    마지막 »
+                </a>
+                {% endif %}
+        </div>
+
+
+    </div>
+
+    <form method="POST" action="{{ url_for('logout') }}" class="mt-8 w-full max-w-4xl flex justify-end">
+        <button type="submit" class="bg-gray-700 hover:bg-gray-900 text-white px-4 py-2 rounded font-semibold">
+            로그아웃
+        </button>
+    </form>
 
 </body>
 
@@ -54,7 +87,7 @@
 
     window.addEventListener("mousemove", (e) => {
         moveCount++;
-        if (moveCount % 7 === 0) {  // 10번마다 한 번 별 생성 (빈도 조절 가능)
+        if (moveCount % 7 === 0) {  // 7번마다 한 번 별 생성 (빈도 조절 가능)
             const star = document.createElement("div");
             star.classList.add("star");
             star.style.left = e.clientX + "px";

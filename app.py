@@ -33,9 +33,8 @@ def log_visit(ip, user_agent, url):
 
 @app.before_request
 def track_visit():
-    if not (request.path.startswith("/favicon.ico") or request.path.startswith("/static")):
+    if not (request.path.startswith("/favicon.ico") or request.path.startswith("/static") or request.path.startswith("/admin")):
         log_visit(request.remote_addr, request.user_agent.string, request.path)
-
 
 @app.route("/")
 def index():
@@ -61,24 +60,32 @@ def dashboard():
     if not session.get("admin"):
         return redirect(url_for("admin"))
 
+    # 페이지 번호 받아오기, 기본은 1
+    page = int(request.args.get("page", 1))
+    per_page = 20
+    offset = (page - 1) * per_page
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("SELECT ip_address, accessed_url, timestamp FROM visits_log ORDER BY timestamp DESC LIMIT 50")
+
+    # 전체 개수 세기
+    c.execute("SELECT COUNT(*) FROM visits_log")
+    total_logs = c.fetchone()[0]
+    total_pages = (total_logs + per_page - 1) // per_page  # 올림
+
+    # offset부터 per_page개 가져오기
+    c.execute("SELECT ip_address, accessed_url, timestamp FROM visits_log ORDER BY timestamp DESC LIMIT ? OFFSET ?", (per_page, offset))
     logs = c.fetchall()
     conn.close()
 
-    # logs는 [(ip, url, timestamp_str), ...] 꼴이니까, timestamp_str을 KST로 변환
     logs_kst = []
     for ip, url, timestamp_str in logs:
-        # ISO 형식 문자열을 datetime으로 변환
         utc_dt = datetime.fromisoformat(timestamp_str)
-        # 9시간 더하기
         kst_dt = utc_dt + timedelta(hours=9)
-        # 보기 좋은 포맷으로 변환 (예: 2025-07-04 14:17:30)
         kst_str = kst_dt.strftime("%Y-%m-%d %H:%M:%S")
         logs_kst.append((ip, url, kst_str))
-    
-    return render_template("dashboard.html", logs=logs_kst)
+
+    return render_template("dashboard.html", logs=logs_kst, page=page, total_pages=total_pages)
 
 @app.route("/admin/dashboard/clear", methods=["POST"])
 def clear_logs():
@@ -91,6 +98,11 @@ def clear_logs():
     conn.commit()
     conn.close()
     return redirect(url_for("dashboard"))
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return redirect(url_for("admin"))
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True, port=5000)
